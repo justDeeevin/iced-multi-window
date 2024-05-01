@@ -1,0 +1,8 @@
+[package]
+name = "iced-multi-window"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+iced = { version = "0.12.1", features = ["multi-window"] }
+iced-multi-window-macros = { path = "iced-multi-window-macros" }

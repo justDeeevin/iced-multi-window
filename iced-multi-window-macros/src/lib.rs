@@ -1,0 +1,69 @@
+use std::collections::VecDeque;
+
+use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, punctuated::Punctuated, Ident, Token};
+
+/// Creates the `WindowUnion` that is used by the library to refer to the different windows.
+///
+/// `multi_window!` _must be used_ at the top level of your crate.
+///
+/// Usage:
+/// `multi_window!(AppStruct, Window1, Window2, Window3, ...)`
+#[proc_macro]
+pub fn multi_window(item: TokenStream) -> TokenStream {
+    let mut args = parse_macro_input!(item with Punctuated::<Ident, Token![,]>::parse_terminated)
+        .into_iter()
+        .collect::<VecDeque<_>>();
+    let Some(app) = args.pop_front() else {
+        panic!("Expected at least two arguments, got 0");
+    };
+    let windows: Vec<_> = args.into();
+    if windows.is_empty() {
+        panic!("Expected at least two arguments, got 1");
+    }
+    quote! {
+        #[derive(PartialEq, Eq, Debug, Clone)]
+        pub enum WindowUnion {
+            #(
+                #windows(#windows)
+            ),*
+        }
+
+        impl iced_multi_window::Window<#app> for WindowUnion {
+            fn view<'a>(&'a self, app: &'a #app, id: iced::window::Id) -> iced::Element<'_, <#app as iced::multi_window::Application>::Message, <#app as iced::multi_window::Application>::Theme> {
+                match self {
+                    #(
+                        Self::#windows(_) => #windows.view(app, id)
+                    ),*
+                }
+            }
+
+            fn title(&self, app: &#app, id: iced::window::Id) -> String {
+                match self {
+                    #(
+                        Self::#windows(_) => #windows.title(app, id)
+                    ),*
+                }
+            }
+
+            fn theme(&self, app: &#app, id: iced::window::Id) -> <#app as iced::multi_window::Application>::Theme {
+                match self {
+                    #(
+                        Self::#windows(_) => #windows.theme(app, id)
+                    ),*
+                }
+            }
+
+            fn settings(&self) -> iced::window::Settings {
+                match self {
+                    #(
+                        Self::#windows(_) => #windows.settings()
+                    ),*
+                }
+
+            }
+        }
+    }
+    .into()
+}
