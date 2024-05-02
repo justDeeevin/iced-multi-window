@@ -2,8 +2,20 @@
 name = "iced-multi-window"
 version = "1.0.0"
 edition = "2021"
+authors = ["Devin Droddy <devin.droddy@gmail.com>"]
 license = "GPL-3.0"
+description = "Utilities for managing many windows in an iced application"
+repository = "https://github.com/justDeeevin/iced-multi-window"
+keywords = ["iced", "multi-window", "app", "gui", "refactor"]
+categories = ["gui"]
+readme = "README.md"
 
 [dependencies]
 iced = { version = "0.12.1", features = ["multi-window"] }
-iced-multi-window-macros = { path = "iced-multi-window-macros" }
+iced-multi-window-macros.workspace = true
+
+[workspace]
+members = ["macros"]
+
+[workspace.dependencies]
+iced-multi-window-macros = { version = "1.0.0", path = "macros" }
