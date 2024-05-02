@@ -1,3 +1,5 @@
+# `iced-multi-window`
+
 Utilities for managing many windows in an `iced` application.
 
 ## Goals
