@@ -9,6 +9,7 @@ repository = "https://github.com/justDeeevin/iced-multi-window"
 keywords = ["iced", "multi-window", "app", "gui", "refactor"]
 categories = ["gui"]
 readme = "README.md"
+rust-version = "1.72.1"
 
 [dependencies]
 iced = { version = "0.12.1", features = ["multi-window"] }
