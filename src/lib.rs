@@ -52,18 +52,8 @@ use iced::{
     window::{self, Id},
     Command,
 };
-pub use iced_multi_window_macros::multi_window;
+pub use iced_multi_window_macros::{multi_window, window};
 use std::{collections::HashMap, marker::PhantomData};
-
-/// Takes in a [`Window`] identifier and returns an enum variant that can be used by various
-/// functions.
-#[allow(clippy::crate_in_macro_def)]
-#[macro_export]
-macro_rules! window {
-    ($window: ident) => {
-        crate::WindowUnion::$window($window)
-    };
-}
 
 /// A struct for managing multiple windows. Keeps track of the windows, their [`Id`]s, and handles
 /// spawning and closing them.
