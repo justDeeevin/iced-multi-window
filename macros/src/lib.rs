@@ -31,26 +31,26 @@ pub fn multi_window(item: TokenStream) -> TokenStream {
         }
 
         impl iced_multi_window::Window<#app> for WindowUnion {
-            fn view<'a>(&'a self, app: &'a #app, id: iced::window::Id) -> iced::Element<'_, <#app as iced::multi_window::Application>::Message, <#app as iced::multi_window::Application>::Theme> {
+            fn view<'a>(&'a self, app: &'a #app, ) -> iced::Element<'_, <#app as iced::multi_window::Application>::Message, <#app as iced::multi_window::Application>::Theme> {
                 match self {
                     #(
-                        Self::#windows(_) => #windows.view(app, id)
+                        Self::#windows(window) => window.view(app)
                     ),*
                 }
             }
 
-            fn title(&self, app: &#app, id: iced::window::Id) -> String {
+            fn title(&self, app: &#app, ) -> String {
                 match self {
                     #(
-                        Self::#windows(_) => #windows.title(app, id)
+                        Self::#windows(window) => window.title(app)
                     ),*
                 }
             }
 
-            fn theme(&self, app: &#app, id: iced::window::Id) -> <#app as iced::multi_window::Application>::Theme {
+            fn theme(&self, app: &#app, ) -> <#app as iced::multi_window::Application>::Theme {
                 match self {
                     #(
-                        Self::#windows(_) => #windows.theme(app, id)
+                        Self::#windows(window) => window.theme(app)
                     ),*
                 }
             }
@@ -58,7 +58,7 @@ pub fn multi_window(item: TokenStream) -> TokenStream {
             fn settings(&self) -> iced::window::Settings {
                 match self {
                     #(
-                        Self::#windows(_) => #windows.settings()
+                        Self::#windows(window) => window.settings()
                     ),*
                 }
 

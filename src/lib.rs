@@ -109,7 +109,7 @@ impl<App: Application, WindowUnion: Window<App>> WindowManager<App, WindowUnion>
             .expect(
                 "No window found with that Id. Make sure you're only spawning via the window manager!",
             )
-            .view(app, id)
+            .view(app)
     }
 
     pub fn title(&self, app: &App, id: Id) -> String {
@@ -118,7 +118,7 @@ impl<App: Application, WindowUnion: Window<App>> WindowManager<App, WindowUnion>
             .expect(
                 "No window found with that Id. Make sure you're only spawning via the window manager!",
             )
-            .title(app, id)
+            .title(app)
     }
 
     pub fn theme(&self, app: &App, id: Id) -> App::Theme {
@@ -127,7 +127,7 @@ impl<App: Application, WindowUnion: Window<App>> WindowManager<App, WindowUnion>
             .expect(
                 "No window found with that Id. Make sure you're only spawning via the window manager!",
             )
-            .theme(app, id)
+            .theme(app)
     }
 
     pub fn closed(&mut self, id: Id) {
@@ -137,8 +137,8 @@ impl<App: Application, WindowUnion: Window<App>> WindowManager<App, WindowUnion>
 
 /// Defines the behavior of a window.
 pub trait Window<App: Application>: PartialEq + Eq + Clone {
-    fn view<'a>(&'a self, app: &'a App, id: Id) -> iced::Element<'_, App::Message, App::Theme>;
-    fn title<'a>(&'a self, app: &'a App, id: Id) -> String;
-    fn theme<'a>(&'a self, app: &'a App, id: Id) -> App::Theme;
+    fn view<'a>(&'a self, app: &'a App) -> iced::Element<'_, App::Message, App::Theme>;
+    fn title<'a>(&'a self, app: &'a App) -> String;
+    fn theme<'a>(&'a self, app: &'a App) -> App::Theme;
     fn settings(&self) -> window::Settings;
 }
