@@ -1,7 +1,6 @@
-use std::collections::VecDeque;
-
 use proc_macro::TokenStream;
 use quote::quote;
+use std::collections::VecDeque;
 use syn::{parse_macro_input, punctuated::Punctuated, Ident, Token};
 
 /// Creates the `WindowUnion` that is used by the library to refer to the different windows.

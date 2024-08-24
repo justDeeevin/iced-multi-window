@@ -27,7 +27,7 @@
 //!     })
 //! }
 //!
-//! fn update(^mut self, message: Self::Message) -> iced::Command<Self::Message> {
+//! fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
 //!     match message {
 //!         ...
 //!         Message::WindowClosed(id) => {
@@ -57,7 +57,7 @@ use std::{collections::HashMap, marker::PhantomData};
 
 /// A struct for managing multiple windows. Keeps track of the windows, their [`Id`]s, and handles
 /// spawning and closing them.
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct WindowManager<App: Application, WindowUnion: Window<App>> {
     windows: HashMap<Id, WindowUnion>,
     phantom: PhantomData<App>,
@@ -80,7 +80,7 @@ impl<App: Application, WindowUnion: Window<App>> WindowManager<App, WindowUnion>
         (id, command)
     }
 
-    // Returns a command to close all the windows.
+    /// Returns a command to close all the windows.
     pub fn close_all(&mut self) -> Command<App::Message> {
         let mut commands = Vec::new();
         for id in self.windows.keys() {
@@ -89,6 +89,7 @@ impl<App: Application, WindowUnion: Window<App>> WindowManager<App, WindowUnion>
         Command::batch(commands)
     }
 
+    /// Checks if any instances of the given window are open.
     pub fn any_of(&self, window: WindowUnion) -> bool {
         self.windows.values().any(|w| w == &window)
     }
