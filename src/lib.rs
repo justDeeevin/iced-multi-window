@@ -52,7 +52,7 @@ use iced::{
     window::{self, Id},
     Command,
 };
-pub use iced_multi_window_macros::{multi_window, window};
+pub use iced_multi_window_macros::window;
 use std::{collections::HashMap, marker::PhantomData};
 
 /// A struct for managing multiple windows. Keeps track of the windows, their [`Id`]s, and handles
@@ -132,4 +132,57 @@ pub trait Window<App: Application>: PartialEq + Eq + Clone {
     fn title<'a>(&'a self, app: &'a App) -> String;
     fn theme<'a>(&'a self, app: &'a App) -> App::Theme;
     fn settings(&self) -> window::Settings;
+}
+
+/// Creates the `WindowUnion` that is used by the library to refer to the different windows.
+///
+/// `multi_window!` _must be used_ at the top level of your crate.
+///
+/// Usage:
+/// `multi_window!(AppStruct, Window1, Window2, Window3, ...)`
+#[macro_export]
+macro_rules! multi_window {
+    ($app:ty, $($window:ident),+ $(,)?) => {
+        #[derive(PartialEq, Eq, Debug, Clone)]
+        pub enum WindowUnion {
+            $(
+                $window($window)
+            ),+
+        }
+
+        impl iced_multi_window::Window<$app> for WindowUnion {
+            fn view<'a>(&'a self, app: &'a $app, ) -> iced::Element<'_, <$app as iced::multi_window::Application>::Message, <$app as iced::multi_window::Application>::Theme> {
+                match self {
+                    $(
+                        Self::$window(window) => window.view(app)
+                    ),+
+                }
+            }
+
+            fn title(&self, app: &$app, ) -> String {
+                match self {
+                    $(
+                        Self::$window(window) => window.title(app)
+                    ),+
+                }
+            }
+
+            fn theme(&self, app: &$app, ) -> <$app as iced::multi_window::Application>::Theme {
+                match self {
+                    $(
+                        Self::$window(window) => window.theme(app)
+                    ),+
+                }
+            }
+
+            fn settings(&self) -> iced::window::Settings {
+                match self {
+                    $(
+                        Self::$window(window) => window.settings()
+                    ),+
+                }
+
+            }
+        }
+    };
 }
