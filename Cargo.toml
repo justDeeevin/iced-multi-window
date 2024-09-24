@@ -12,11 +12,4 @@ readme = "README.md"
 rust-version = "1.72.1"
 
 [dependencies]
-iced = { version = "0.13.0", features = ["multi-window"] }
-iced-multi-window-macros.workspace = true
-
-[workspace]
-members = ["macros"]
-
-[workspace.dependencies]
-iced-multi-window-macros = { version = "1.0.0", path = "macros" }
+iced = { version = "0.13.0", default-features = false }
