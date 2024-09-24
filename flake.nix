@@ -10,15 +10,14 @@
     with inputs; let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      toolchain = fenix.packages.${system}.complete.toolchain;
-    in
-    {
+      toolchain = fenix.packages.${system}.stable.toolchain;
+    in {
       devShells.x86_64-linux = {
         default = pkgs.mkShell {
           # Libraries
-          buildInputs = [ ];
+          buildInputs = [];
           # Additional tooling
-          packages = [ toolchain ];
+          packages = [toolchain];
         };
       };
     };
