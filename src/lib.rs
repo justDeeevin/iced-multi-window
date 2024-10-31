@@ -99,6 +99,20 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
         Task::batch(tasks)
     }
 
+    pub fn close_all_of(
+        &mut self,
+        window: Box<dyn Window<App, Theme, Message, Renderer>>,
+    ) -> Task<Id> {
+        let mut tasks = Vec::new();
+        for (id, w) in self.windows.iter() {
+            if w == &window {
+                tasks.push(window::close(*id));
+            }
+        }
+
+        Task::batch(tasks)
+    }
+
     /// Checks for any open instances of the given window.
     pub fn any_of(&self, window: Box<dyn Window<App, Theme, Message, Renderer>>) -> bool {
         self.windows.values().any(|w| w == &window)
