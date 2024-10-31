@@ -31,9 +31,6 @@ pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
     /// The unique identifier for this window. This is used for the comparison of windows, so it is
     /// recommended to include any internal data in the id.
     fn id(&self) -> &'static str;
-    fn eq(&self, other: &dyn Window<App, Theme, Message, Renderer>) -> bool {
-        self.id() == other.id()
-    }
 }
 
 trait WindowClone<App, Theme, Message, Renderer> {
@@ -54,6 +51,9 @@ impl<App, Theme, Message, Renderer> Clone for Box<dyn Window<App, Theme, Message
     }
 }
 
+impl<App, Theme, Message, Renderer> PartialEq for Box<dyn Window<App, Theme, Message, Renderer>> {
+    fn eq(&self, other: &Self) -> bool {
+        self.id() == other.id()
     }
 }
 
@@ -100,8 +100,8 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
     }
 
     /// Checks for any open instances of the given window.
-    pub fn any_of(&self, window: &dyn Window<App, Theme, Message, Renderer>) -> bool {
-        self.windows.values().any(|w| w.eq(window))
+    pub fn any_of(&self, window: Box<dyn Window<App, Theme, Message, Renderer>>) -> bool {
+        self.windows.values().any(|w| w == &window)
     }
 
     /// Updates internal state to reflect that the given window Id  was closed.
@@ -113,9 +113,9 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
     #[allow(clippy::type_complexity)]
     pub fn instances_of(
         &self,
-        window: &dyn Window<App, Theme, Message, Renderer>,
+        window: Box<dyn Window<App, Theme, Message, Renderer>>,
     ) -> Vec<(&Id, &Box<dyn Window<App, Theme, Message, Renderer>>)> {
-        self.windows.iter().filter(|(_, w)| w.eq(window)).collect()
+        self.windows.iter().filter(|(_, w)| *w == &window).collect()
     }
 
     pub fn empty(&self) -> bool {
