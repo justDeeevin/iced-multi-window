@@ -40,17 +40,20 @@ trait WindowClone<App, Theme, Message, Renderer> {
     fn clone_box(&self) -> Box<dyn Window<App, Theme, Message, Renderer>>;
 }
 
+impl<App, Theme, Message, Renderer, T: 'static + Window<App, Theme, Message, Renderer> + Clone>
+    WindowClone<App, Theme, Message, Renderer> for T
+{
+    fn clone_box(&self) -> Box<dyn Window<App, Theme, Message, Renderer>> {
+        Box::new(self.clone())
+    }
+}
+
 impl<App, Theme, Message, Renderer> Clone for Box<dyn Window<App, Theme, Message, Renderer>> {
     fn clone(&self) -> Self {
         self.clone_box()
     }
 }
 
-impl<App, Theme, Message, Renderer, T: 'static + Window<App, Theme, Message, Renderer> + Clone>
-    WindowClone<App, Theme, Message, Renderer> for T
-{
-    fn clone_box(&self) -> Box<dyn Window<App, Theme, Message, Renderer>> {
-        Box::new(self.clone())
     }
 }
 
