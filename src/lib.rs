@@ -65,11 +65,11 @@ pub struct WindowManager<App, Theme, Message, Renderer = iced::Renderer> {
 
 impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer> {
     /// Returns the window associated with the given Id, panicking if it doesn't exist.
-    #[allow(clippy::borrowed_box)]
-    fn get(&self, id: Id) -> &Box<dyn Window<App, Theme, Message, Renderer>> {
+    fn get(&self, id: Id) -> &dyn Window<App, Theme, Message, Renderer> {
         self.windows
             .get(&id)
             .expect("No window found with given Id")
+            .as_ref()
     }
 
     pub fn view<'a>(&self, app: &'a App, id: Id) -> Element<'a, Message, Theme, Renderer> {
