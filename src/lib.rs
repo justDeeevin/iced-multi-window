@@ -51,8 +51,10 @@ impl<App, Theme, Message, Renderer> Clone for Box<dyn Window<App, Theme, Message
     }
 }
 
-impl<App, Theme, Message, Renderer> PartialEq for Box<dyn Window<App, Theme, Message, Renderer>> {
-    fn eq(&self, other: &Self) -> bool {
+impl<App, Theme, Message, Renderer, T: Window<App, Theme, Message, Renderer>> PartialEq<T>
+    for Box<dyn Window<App, Theme, Message, Renderer>>
+{
+    fn eq(&self, other: &T) -> bool {
         self.id() == other.id()
     }
 }
@@ -101,11 +103,11 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
 
     pub fn close_all_of(
         &mut self,
-        window: Box<dyn Window<App, Theme, Message, Renderer>>,
+        window: &impl Window<App, Theme, Message, Renderer>,
     ) -> Task<Id> {
         let mut tasks = Vec::new();
         for (id, w) in self.windows.iter() {
-            if w == &window {
+            if w == window {
                 tasks.push(window::close(*id));
             }
         }
@@ -114,8 +116,8 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
     }
 
     /// Checks for any open instances of the given window.
-    pub fn any_of(&self, window: Box<dyn Window<App, Theme, Message, Renderer>>) -> bool {
-        self.windows.values().any(|w| w == &window)
+    pub fn any_of(&self, window: &impl Window<App, Theme, Message, Renderer>) -> bool {
+        self.windows.values().any(|w| w == window)
     }
 
     /// Updates internal state to reflect that the given window Id  was closed.
@@ -127,9 +129,9 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
     #[allow(clippy::type_complexity)]
     pub fn instances_of(
         &self,
-        window: Box<dyn Window<App, Theme, Message, Renderer>>,
+        window: &impl Window<App, Theme, Message, Renderer>,
     ) -> Vec<(&Id, &Box<dyn Window<App, Theme, Message, Renderer>>)> {
-        self.windows.iter().filter(|(_, w)| *w == &window).collect()
+        self.windows.iter().filter(|(_, w)| *w == window).collect()
     }
 
     pub fn empty(&self) -> bool {
