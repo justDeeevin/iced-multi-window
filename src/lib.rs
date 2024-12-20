@@ -112,11 +112,11 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
 
     pub fn close_all_of(
         &mut self,
-        window: &impl Window<App, Theme, Message, Renderer>,
+        window: Box<dyn Window<App, Theme, Message, Renderer>>,
     ) -> Task<Id> {
         let mut tasks = Vec::new();
         for (id, w) in self.windows.iter() {
-            if w == window {
+            if *w == window {
                 tasks.push(window::close(*id));
             }
         }
