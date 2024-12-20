@@ -14,6 +14,7 @@
 //!
 //! You have to manually inform the `WindowManager` when a window is closed. This can be done by subscribing to `iced::window::close_events()` and passing the `Id` of each closed window to `WindowManager::was_closed()`.
 
+use dyn_clone::DynClone;
 use iced::{
     window::{self, Id},
     Element, Task,
@@ -22,7 +23,7 @@ use std::collections::HashMap;
 
 #[allow(private_bounds)]
 pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
-    Send + std::fmt::Debug + WindowClone<App, Theme, Message, Renderer>
+    Send + std::fmt::Debug + DynClone
 {
     fn view<'a>(&'a self, app: &'a App) -> iced::Element<'a, Message, Theme, Renderer>;
     fn title(&self, app: &App) -> String;
@@ -33,23 +34,7 @@ pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
     fn id(&self) -> String;
 }
 
-trait WindowClone<App, Theme, Message, Renderer> {
-    fn clone_box(&self) -> Box<dyn Window<App, Theme, Message, Renderer>>;
-}
-
-impl<App, Theme, Message, Renderer, T: 'static + Window<App, Theme, Message, Renderer> + Clone>
-    WindowClone<App, Theme, Message, Renderer> for T
-{
-    fn clone_box(&self) -> Box<dyn Window<App, Theme, Message, Renderer>> {
-        Box::new(self.clone())
-    }
-}
-
-impl<App, Theme, Message, Renderer> Clone for Box<dyn Window<App, Theme, Message, Renderer>> {
-    fn clone(&self) -> Self {
-        self.clone_box()
-    }
-}
+dyn_clone::clone_trait_object!(<App, Theme, Message, Renderer> Window<App, Theme, Message, Renderer>);
 
 impl<App, Theme, Message, Renderer, T: Window<App, Theme, Message, Renderer>> PartialEq<T>
     for Box<dyn Window<App, Theme, Message, Renderer>>

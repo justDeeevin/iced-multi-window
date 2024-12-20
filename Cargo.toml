@@ -12,4 +12,5 @@ readme = "README.md"
 rust-version = "1.72.1"
 
 [dependencies]
+dyn-clone = "1.0.17"
 iced = { version = "0.13.0", default-features = false }
