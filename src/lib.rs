@@ -44,6 +44,30 @@ impl<App, Theme, Message, Renderer, T: Window<App, Theme, Message, Renderer>> Pa
     }
 }
 
+impl<App, Theme, Message, Renderer> Window<App, Theme, Message, Renderer>
+    for Box<dyn Window<App, Theme, Message, Renderer>>
+{
+    fn view<'a>(&'a self, app: &'a App) -> iced::Element<'a, Message, Theme, Renderer> {
+        self.as_ref().view(app)
+    }
+
+    fn title(&self, app: &App) -> String {
+        self.as_ref().title(app)
+    }
+
+    fn theme(&self, app: &App) -> Theme {
+        self.as_ref().theme(app)
+    }
+
+    fn settings(&self) -> window::Settings {
+        self.as_ref().settings()
+    }
+
+    fn id(&self) -> String {
+        self.as_ref().id()
+    }
+}
+
 pub struct WindowManager<App, Theme, Message, Renderer = iced::Renderer> {
     windows: HashMap<Id, Box<dyn Window<App, Theme, Message, Renderer>>>,
 }
