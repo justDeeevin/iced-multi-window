@@ -24,7 +24,7 @@ use std::collections::HashMap;
 pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
     Send + std::fmt::Debug + WindowClone<App, Theme, Message, Renderer>
 {
-    fn view<'a>(&self, app: &'a App) -> iced::Element<'a, Message, Theme, Renderer>;
+    fn view<'a>(&'a self, app: &'a App) -> iced::Element<'a, Message, Theme, Renderer>;
     fn title(&self, app: &App) -> String;
     fn theme(&self, app: &App) -> Theme;
     fn settings(&self) -> window::Settings;
@@ -72,7 +72,7 @@ impl<App, Theme, Message, Renderer> WindowManager<App, Theme, Message, Renderer>
             .as_ref()
     }
 
-    pub fn view<'a>(&self, app: &'a App, id: Id) -> Element<'a, Message, Theme, Renderer> {
+    pub fn view<'a>(&'a self, app: &'a App, id: Id) -> Element<'a, Message, Theme, Renderer> {
         self.get(id).view(app)
     }
 
