@@ -29,9 +29,10 @@ pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
     fn title(&self, app: &App) -> String;
     fn theme(&self, app: &App) -> Theme;
     fn settings(&self) -> window::Settings;
-    /// The unique identifier for this window. This is used for the comparison of windows, so it is
-    /// recommended to include any internal data in the id.
+    /// The unique identifier for this window. This is used for the comparison of windows, so it is recommended to include any internal data in the id.
     fn id(&self) -> String;
+    /// An identifier for this window's "class". Whereas `id` is used to identify individual windows, `class` is used to identify a window's type.
+    fn class(&self) -> &'static str;
 }
 
 dyn_clone::clone_trait_object!(<App, Theme, Message, Renderer> Window<App, Theme, Message, Renderer>);
@@ -65,6 +66,10 @@ impl<App, Theme, Message, Renderer> Window<App, Theme, Message, Renderer>
 
     fn id(&self) -> String {
         self.as_ref().id()
+    }
+
+    fn class(&self) -> &'static str {
+        self.as_ref().class()
     }
 }
 
