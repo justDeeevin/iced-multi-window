@@ -19,7 +19,7 @@ use iced::{
     window::{self, Id},
     Element, Task,
 };
-use std::collections::HashMap;
+use std::{any::type_name, collections::HashMap};
 
 #[allow(private_bounds)]
 pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
@@ -29,10 +29,21 @@ pub trait Window<App, Theme, Message, Renderer = iced::Renderer>:
     fn title(&self, app: &App) -> String;
     fn theme(&self, app: &App) -> Theme;
     fn settings(&self) -> window::Settings;
-    /// The unique identifier for this window. This is used for the comparison of windows, so it is recommended to include any internal data in the id.
-    fn id(&self) -> String;
+    /// The unique identifier for this window. This includes any internal data.
+    fn id(&self) -> String {
+        let data = format!("{:?}", self);
+        let data = if let Some(i) = data.find(" {") {
+            data[i..].to_string()
+        } else {
+            format!("::{}", data)
+        };
+
+        format!("{}{}", type_name::<Self>(), data)
+    }
     /// An identifier for this window's "class". Whereas `id` is used to identify individual windows, `class` is used to identify a window's type.
-    fn class(&self) -> &'static str;
+    fn class(&self) -> &'static str {
+        type_name::<Self>()
+    }
 }
 
 dyn_clone::clone_trait_object!(<App, Theme, Message, Renderer> Window<App, Theme, Message, Renderer>);
