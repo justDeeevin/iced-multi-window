@@ -17,7 +17,7 @@
           # Libraries
           buildInputs = [];
           # Additional tooling
-          packages = [toolchain];
+          packages = with pkgs; [toolchain cargo-release];
         };
       };
     };
