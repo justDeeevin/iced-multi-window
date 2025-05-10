@@ -1,5 +1,8 @@
 # `iced-multi-window`
 
+> [!IMPORTANT]
+> This library is now part of the workspace in [NuhxBoard](https://github.com/justdeeevin/NuhxBoard).
+
 Utilities for managing many windows in an `iced` application.
 
 ## Goals
